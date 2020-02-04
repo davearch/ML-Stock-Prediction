@@ -1,7 +1,7 @@
 {
   "name": "hello_template",
   "version": "1.0.0",
-  "description": "A template for creating a full stack wep app with Flask, NPM, Webpack, and Reactjs",
+  "description": "Machine Learning for Asset Prediction",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Eyongkevin/portfolio_template.git"
+    "url": ""
   },
   "keywords": [
     "portfolio",
@@ -21,15 +21,17 @@
     "npm",
     "webpack"
   ],
-  "author": "Eyong Kevin",
+  "author": "David Archuleta",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Eyongkevin/portfolio_template/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/Eyongkevin/portfolio_template#readme",
+  "homepage": "https://darchuletajr.com",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "react": "^16.6.0",
@@ -38,7 +40,11 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "css-loader": "^3.4.2",
     "history": "^4.7.2",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "^4.3.1",
+    "semantic-ui-react": "^0.88.2",
+    "style-loader": "^1.1.3",
+    "victory": "^34.0.1"
   }
 }
