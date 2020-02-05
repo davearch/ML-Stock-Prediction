@@ -1,126 +1,140 @@
 import React, { Component } from 'react'
-import { Container, Header, Checkbox, Form, Select, Button } from 'semantic-ui-react'
+import { Container, Header, Form, Select, Button } from 'semantic-ui-react'
 
-import { VictoryLine, VictoryBar, VictoryChart, VictoryAxis, VictoryTheme } from 'victory'
-
-const data = [
-	{x:1, y: 13000},
-	{x:2, y: 16500},
-	{x:3, y: 14250},
-	{x:4, y: 19000}
-];
+import { VictoryLine, VictoryChart, VictoryTheme, VictoryAxis } from 'victory'
 
 const stockOptions = [
-    { key: 'BTC-USD', text: 'Bitcoin (BTC-USD)', value: 'BTC-USD' },
-    { key: 'AAPL', text: 'Apple (AAPL)', value: 'AAPL' },
-    { key: 'MSFT', text: 'Microsoft (MSFT)', value: 'MSFT' },
-    { key: 'INTC', text: 'Intel (INTC)', value: 'INTC' },
-  ]
+	{ key: 'BTC-USD', text: 'Bitcoin (BTC-USD)', value: 'BTC-USD' },
+	{ key: 'AAPL', text: 'Apple (AAPL)', value: 'AAPL' },
+	{ key: 'MSFT', text: 'Microsoft (MSFT)', value: 'MSFT' },
+	{ key: 'INTC', text: 'Intel (INTC)', value: 'INTC' },
+]
 
 const MODELS = ['gboost', 'ridge', 'lasso', 'nn_1d_lstm']
 
+const datas = [
+	{ date: '10/10', val: 4500 },
+	{ date: '10/11', val: 4600 },
+	{ date: '10/12', val: 4300 },
+	{ date: '10/13', val: 4800 },
+	{ date: '10/14', val: 4400 },
+]
+
 class AssetForm extends Component {
-    state = {
-      models: MODELS.reduce(
-        (models, model) => ({
-          ...models,
-	  [model]: false,
-        }),
-	{}
-      ),
-      stock: '',
-    }
-    handleSelect = (e, {value}) => this.setState({ 'stock': value }) // Select stock to predict
-    //handleChange = (e, {value}) => this.setState({ [model]: value }) // checkbox ML models
-    handleChange = e => {
-      e.persist();
-      const { name } = e.target;
-      console.log(name);
+	state = {
+		models: MODELS.reduce(
+			(models, model) => ({
+				...models,
+				[model]: false,
+			}),
+			{}
+		),
+		stock: '',
+		data: datas,
+	}
+	handleSelect = (e, { value }) => this.setState({ 'stock': value }) // Select stock to predict
 
-      this.setState(prevState => ({
-        models: {
-          ...prevState.models,
-          [name]: !prevState.models[name]
-        }
-      }));
-    };
-    
-    render() {
-        return (
-            <div className="asset-form">
-		<Container text>
-                    <Header as='h1'>Machine Learning for Asset Prediction</Header>
-			<Form>
-			    <Form.Group widths='equal'>
-				<Form.Field
-				    control={Select}
-				    label='Select Asset'
-				    options={stockOptions}
-				    placeholder='Stock Options'
-				    onChange={this.handleSelect}
+	handleChange = e => {
+		e.persist();
+		const { name } = e.target;
+
+		this.setState(prevState => ({
+			models: {
+				...prevState.models,
+				[name]: !prevState.models[name]
+			}
+		}));
+	};
+
+	handleFormSubmit = formSubmitEvent => {
+		formSubmitEvent.preventDefault();
+
+		const json_data = {
+			stock: this.state.stock,
+			models: this.state.models
+		}
+		fetch('/api', {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify(json_data),
+		})
+			.then(res => res.json())
+			.then(res => {
+				if (res === 'object' && res !== null) {
+					this.setState({
+						data:
+							res.map((x) => ({
+								date: x.date,
+								val: x.val
+							}))
+					});
+				} else {
+					console.log(res);
+				}
+			})
+	};
+
+	createCheckbox = option => (
+		<Form.Field key={option}>
+			<label>{option}
+				<input
+					name={option}
+					type='checkbox'
+					checked={this.state.models[option]}
+					onChange={this.handleChange}
 				/>
-			    </Form.Group>
-			    <Form.Group>
-				<Form.Field>
-				  <label>Gradient Boost
-				    <input
-				      name='gboost'
-			              type='checkbox'
-		                      checked={this.state.models['gboost']}
-		                      onChange={this.handleChange}
-				    />
-			          </label>
-				</Form.Field>
-				<Form.Field>
-			          <label>Ridge Regression
-				    <input
-		                      name='ridge'
-		                      type='checkbox'
-		                      checked={this.state.models['ridge']}
-		                      onChange={this.handleChange}
-		                    />
-		                  </label>
-				</Form.Field>
-				<Form.Field>
-		                  <label>Lasso Regression
-		                    <input
-		                      name='lasso'
-		                      type='checkbox'
-		                      checked={this.state.models['lasso']}
-		                      onChange={this.handleChange}
-		                    />
-		                  </label>
-				</Form.Field>
-				<Form.Field>
-		                  <label>Neural Network with 1D Convolutional and LSTM Layers
-		                    <input
-		                      name='nn_1d_lstm'
-		                      type='checkbox'
-		                      checked={this.state.models['nn_1d_lstm']}
-		                      onChange={this.handleChange}
-				    />
-			          </label>
-				</Form.Field>
-			    </Form.Group>
-			    <Form.Group>
-		              <Form.Field control={Button}>Predict</Form.Field>
-			    </Form.Group>
-			</Form>
+			</label>
+		</Form.Field>
+	);
+	createCheckboxes = () => MODELS.map(this.createCheckbox);
 
-			<VictoryChart domainPadding={20} theme={VictoryTheme.material} >
-			  <VictoryLine
-			    style={{
-			      data: { stroke: "#c43a31" },
-			      parent: { border: "1px solid #ccc" }
-			    }}
-			    data={data}
-			  />
-			</VictoryChart>
+	render() {
+		return (
+			<div className="asset-form">
+				<Container text>
+					<Header as='h1'>Machine Learning for Asset Prediction</Header>
+					<Form onSubmit={this.handleFormSubmit}>
+						<Form.Group widths='equal'>
+							<Form.Field
+								control={Select}
+								label='Select Asset'
+								options={stockOptions}
+								placeholder='Stock Options'
+								onChange={this.handleSelect}
+							/>
+						</Form.Group>
+						<Form.Group>
+							{this.createCheckboxes()}
+						</Form.Group>
+						<Form.Group>
+							<Form.Field control={Button}>Predict</Form.Field>
+						</Form.Group>
+					</Form>
 
-		    </Container>
-            </div>
-        );
-    }
+					<VictoryChart domainPadding={20} theme={VictoryTheme.material}>
+					<VictoryAxis style={{ tickLabels: { angle: -60 } }} />
+					<VictoryAxis dependentAxis />
+						<VictoryLine
+							style={{
+								data: { stroke: "#c43a31" },
+								parent: { border: "1px solid #ccc" }
+							}}
+							animate={{
+								duration: 2000,
+								onLoad: { duration: 1000 }
+							  }}
+							data={this.state.data}
+							x="date"
+							y="val"
+						/>
+					</VictoryChart>
+
+				</Container>
+			</div>
+		);
+	}
 }
 
 export default AssetForm
