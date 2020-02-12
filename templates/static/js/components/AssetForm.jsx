@@ -12,6 +12,7 @@ const stockOptions = [
 
 const MODELS = ['gboost', 'ridge', 'lasso', 'nn_1d_lstm']
 
+/*
 const datas = [
 	{ date: '10/10', val: 4500 },
 	{ date: '10/11', val: 4600 },
@@ -19,6 +20,8 @@ const datas = [
 	{ date: '10/13', val: 4800 },
 	{ date: '10/14', val: 4400 },
 ]
+*/
+const datas = [2001,2003,2004,2000,2400]
 
 class AssetForm extends Component {
 	state = {
@@ -53,7 +56,7 @@ class AssetForm extends Component {
 			stock: this.state.stock,
 			models: this.state.models
 		}
-		fetch('/api', {
+		fetch('/api/', {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
@@ -62,16 +65,19 @@ class AssetForm extends Component {
 		})
 			.then(res => res.json())
 			.then(res => {
-				if (res === 'object' && res !== null) {
+				if (res !== null) {
+					console.log(res);
 					this.setState({
-						data:
+						data: res.data
+						/*
 							res.map((x) => ({
 								date: x.date,
 								val: x.val
 							}))
+						*/
 					});
 				} else {
-					console.log(res);
+					console.log('else');
 				}
 			})
 	};
