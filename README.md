@@ -1,10 +1,7 @@
-# A Template for Creating a Full Stack Web Application with Flask, NPM, Webpack and Reactjs
+# ML Web Application for Stock Prediction
 
 ## About
-This is a **Hello React!** web app template written in Python-Flask for the back end and React-JS for the front end. You can use this starter files as a template for your own web app projects.
-
-## How I Did It!
-You can find a walkthrough of how I build this application from scratch on [my blog](https://medium.com/@tonyparkerkenz/a-template-for-creating-a-full-stack-web-application-with-flask-npm-webpack-and-reactjs-be2294b111bd)
+This is a Web Application built with Flask and React, meant more as a proof of concept, than a rigorous commercial app for to base your portfolio or trading on. Please don't use this and blame me if you lose money. The original Jupyter notebook that this web app is based on can be found [here](https://github.com/davearch/stock-price-prediction-machine-learning). This app also had its foundation in the template made by Eyong Kevin [here](https://github.com/Eyongkevin/hello_template)
 
 ## Instructions
 Below are the installing and running procedues
@@ -19,5 +16,3 @@ For this project, I used : **npm v4.6.1**, **pip v18.0**, **python v3.6.2**
 ### Running
 1. Go to the root directory and start the server with `python run.py`
 2. If all is working correctly, you will be given an address http://127.0.0.1:5000/ which you can open in your favorite browser and see our application running and displaying “Hello React!”
-
-
